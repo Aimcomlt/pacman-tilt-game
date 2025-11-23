@@ -1,0 +1,10 @@
+{
+  "name": "@pacman/assets",
+  "version": "0.1.0",
+  "private": true,
+  "main": "maps/default.json",
+  "files": [
+    "maps",
+    "sprites"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@pacman/engine",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p . --emitDeclarationOnly false",
+    "lint": "eslint src",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@pacman/shared": "0.1.0"
+  }
+}
