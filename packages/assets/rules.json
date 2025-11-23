@@ -1,0 +1,7 @@
+{
+  "tickRate": 60,
+  "pelletScore": 10,
+  "powerPelletScore": 50,
+  "ghostScore": 200,
+  "powerModeDurationMs": 6000
+}
