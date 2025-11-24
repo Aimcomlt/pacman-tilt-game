@@ -1,4 +1,4 @@
-import { SpriteDefinition } from '../engine/types';
+import { SpriteDefinition } from './types';
 
 export interface SpriteJSON {
   playerSpeed?: number;

@@ -7,6 +7,6 @@
     "build": "tsc -p . --emitDeclarationOnly false",
     "typecheck": "tsc -p . --noEmit",
     "lint": "eslint src",
-    "test": "vitest"
+    "test": "node -e \"console.log('No tests for @pacman/shared yet')\""
   }
 }

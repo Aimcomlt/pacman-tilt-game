@@ -6,5 +6,8 @@
   "files": [
     "maps",
     "sprites"
-  ]
+  ],
+  "scripts": {
+    "test": "node -e \"console.log('No tests for @pacman/assets')\""
+  }
 }

@@ -1,5 +1,5 @@
-import { MapDefinition, Position, TileType } from '../engine/types';
-import { buildMapGraph } from '../engine/mapGraphBuilder';
+import { MapDefinition, Position, TileType } from './types';
+import { buildMapGraph } from './mapGraphBuilder';
 
 export interface MapJSON {
   layout?: string[];

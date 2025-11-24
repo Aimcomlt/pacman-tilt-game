@@ -1,5 +1,5 @@
+import * as GhostAI from './ghostAI';
 import { Direction, GhostState, MapDefinition, PlayerState, Position } from './types';
-import { chooseDirection } from './ghostAI';
 
 const directionVectors: Record<Direction, Position> = {
   up: { x: 0, y: -1 },
@@ -51,7 +51,7 @@ export function moveGhost(
   map: MapDefinition,
   ghosts: GhostState[]
 ): GhostState {
-  const direction = chooseDirection(ghost, player, map, ghosts);
+  const direction = GhostAI.chooseDirection(ghost, player, map, ghosts);
   const canContinue = direction !== 'none' && canMove(ghost.position, direction, map);
   const nextPosition = canContinue ? advance(ghost.position, direction, ghost.speed) : ghost.position;
   return {

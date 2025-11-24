@@ -5,11 +5,11 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "typecheck": "npm run typecheck --workspaces",
-    "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces",
-    "ci": "npm run lint && npm run test && npm run typecheck && npm run build"
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "ci": "npm run lint --if-present --workspaces && npm run test --if-present --workspaces && npm run typecheck --if-present --workspaces && npm run build --if-present --workspaces"
   },
   "devDependencies": {
     "typescript": "^5.4.5"

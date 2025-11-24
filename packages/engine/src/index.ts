@@ -61,3 +61,5 @@ export const tickGame = ({
 export const loadMap = (raw: unknown): MapSchema => MapLoader.parse(raw);
 export const loadSprites = (raw: unknown): SpriteAtlas => SpriteLoader.parse(raw);
 export const loadRules = (raw: unknown): Ruleset => RulesLoader.parse(raw);
+
+export * from './legacy';

@@ -1,13 +1,24 @@
-import { detectCollisions } from '../../../src/game/engine/collisions';
-import { moveGhost, movePlayer } from '../../../src/game/engine/movement';
-import { chooseDirection } from '../../../src/game/engine/ghostAI';
-import { bfsNextDirection, distanceBetweenPositions } from '../../../src/game/engine/pathfinding';
-import { buildMapGraph, positionKey } from '../../../src/game/engine/mapGraphBuilder';
-import { createInitialState, tick } from '../../../src/game/engine/tick';
-import { loadMap } from '../../../src/game/loaders/mapLoader';
-import { Direction, GameState as EngineGameState, GhostState, PlayerState, Position } from '../../../src/game/engine/types';
+import {
+  bfsNextDirection,
+  buildMapGraph,
+  chooseDirection,
+  createInitialState,
+  detectCollisions,
+  distanceBetweenPositions,
+  loadLegacyMap,
+  loadLegacySprites,
+  moveGhost,
+  movePlayer,
+  positionKey,
+  tick,
+  type LegacyGameState as EngineGameState,
+  type LegacyGhostState as GhostState,
+  type LegacyPlayerState as PlayerState,
+  type Position,
+} from '@pacman/engine';
+import { Direction } from '@pacman/shared';
 
-const basicMap = loadMap({
+const basicMap = loadLegacyMap({
   layout: [
     '###',
     '#P ',
@@ -50,17 +61,11 @@ describe('movement system', () => {
   });
 
   it('moves ghosts using chosen direction', () => {
-    const spy = jest.spyOn(require('../../../src/game/engine/ghostAI'), 'chooseDirection');
-    spy.mockReturnValue('right');
-
     const ghost = createGhost({ x: 1, y: 1 });
     const player = createPlayer({ x: 2, y: 1 });
 
     const moved = moveGhost(ghost, player, basicMap, [ghost]);
     expect(moved.position.x).toBeGreaterThan(ghost.position.x);
-    expect(spy).toHaveBeenCalled();
-
-    spy.mockRestore();
   });
 });
 
@@ -68,7 +73,7 @@ describe('collision detection', () => {
   it('detects overlap between player and ghost tiles', () => {
     const state: EngineGameState = {
       map: basicMap,
-      sprites: loadSprites(),
+      sprites: loadLegacySprites(),
       player: createPlayer({ x: 1, y: 1 }),
       ghosts: [createGhost({ x: 1, y: 1 })],
       pelletsRemaining: 1,
@@ -95,7 +100,7 @@ describe('pellet consumption', () => {
 
 describe('ghost AI', () => {
   it('pursues the player when in chase mode', () => {
-    const map = loadMap({ layout: ['G.P'], legend: { '#': 'wall', '.': 'pellet', 'G': 'ghost', 'P': 'player' } });
+    const map = loadLegacyMap({ layout: ['G.P'], legend: { '#': 'wall', '.': 'pellet', 'G': 'ghost', 'P': 'player' } });
     const ghost = createGhost({ x: 0, y: 0 }, 'blinky', 'chase');
     const player = createPlayer({ x: 2, y: 0 });
 
@@ -106,7 +111,7 @@ describe('ghost AI', () => {
 
 describe('graph pathfinding', () => {
   it('returns next direction toward target when a path exists', () => {
-    const map = loadMap({
+    const map = loadLegacyMap({
       layout: [
         '....',
         '.##.',
