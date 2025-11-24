@@ -14,11 +14,12 @@ import { CanvasRenderer } from './components/CanvasRenderer';
 import { HUD } from './components/HUD';
 import { useTilt } from './hooks/useTilt';
 import { levelLoader } from './store/levelLoader';
+import { env } from './config/env';
 
 const AppRoot = () => {
   const dispatch = useDispatch();
   const renderBatch = useSelector(selectRenderBatch);
-  const { tilt, direction } = useTilt();
+  const { tilt, direction } = useTilt(env.enableTiltInput);
 
   useEffect(() => {
     dispatch(loadLevel(levelLoader.loadDefault()));

@@ -1,13 +1,7 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2019",
-    "module": "commonjs",
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
-    "skipLibCheck": true,
-    "types": ["jest", "node"],
+    "types": ["jest", "node", "expo"],
     "baseUrl": "./src"
   },
   "include": ["src", "../shared/src", "../../src"],

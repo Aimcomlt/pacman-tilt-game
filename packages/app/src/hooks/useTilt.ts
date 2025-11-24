@@ -24,13 +24,15 @@ const toDirection = (vector: Vector2, deadZone = 0.2): Direction => {
   return y > 0 ? 'down' : 'up';
 };
 
-export const useTilt = (): TiltState => {
+export const useTilt = (enabled = true): TiltState => {
   const calibration = useSelector((state: RootState) => state.tilt.calibration);
   const [tiltState, setTiltState] = useState<TiltState>({ tilt: null, direction: 'none' });
   const lastUpdateRef = useRef(0);
   const smoothedRef = useRef<Vector2>({ x: 0, y: 0 });
 
   useEffect(() => {
+    if (!enabled) return undefined;
+
     const SMOOTHING = 0.2;
     const THROTTLE_MS = 75;
     const DEAD_ZONE = 0.15;
@@ -86,7 +88,7 @@ export const useTilt = (): TiltState => {
     return () => {
       cleanupFns.forEach((fn) => fn());
     };
-  }, [calibration]);
+  }, [calibration, enabled]);
 
   return tiltState;
 };
