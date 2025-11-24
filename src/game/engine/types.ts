@@ -22,6 +22,15 @@ export interface MapDefinition {
 
 export interface MapGraph {
   adjacency: Record<string, Position[]>;
+  /**
+   * Precomputed BFS distances between every pair of walkable nodes.
+   * Keys are positionKey strings.
+   */
+  distances: Record<string, Record<string, number>>;
+  /**
+   * Cached list of all walkable node positions for quick nearest-node lookups.
+   */
+  walkableNodes: Position[];
 }
 
 export interface SpriteDefinition {
