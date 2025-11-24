@@ -1,11 +1,8 @@
-export type Direction = 'up' | 'down' | 'left' | 'right' | 'none';
+import { Direction, Vector2 } from '@pacman/shared';
 
 export type TileType = 'wall' | 'pellet' | 'power-pellet' | 'empty';
 
-export interface Position {
-  x: number;
-  y: number;
-}
+export type Position = Vector2;
 
 export interface MapDefinition {
   width: number;
@@ -72,3 +69,5 @@ export interface GameState {
 export interface TickInput {
   desiredDirection?: Direction;
 }
+
+export type { Direction };

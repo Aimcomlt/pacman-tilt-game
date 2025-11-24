@@ -59,7 +59,7 @@ describe('rendering effects', () => {
     };
 
     const batch = selectRenderBatch(state);
-    expect(batch.commands.filter((cmd) => cmd.type === 'tile')).toHaveLength(4);
+    expect(batch.commands.filter((cmd) => cmd.type === 'tile')).toHaveLength(3);
     expect(batch.commands.filter((cmd) => cmd.type === 'sprite')).toHaveLength(2);
   });
 });

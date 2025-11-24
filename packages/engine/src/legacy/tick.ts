@@ -1,7 +1,7 @@
 import { detectCollisions } from './collisions';
 import { moveGhost, movePlayer } from './movement';
-import { loadMap, MapJSON } from '../loaders/mapLoader';
-import { loadSprites, SpriteJSON } from '../loaders/spriteLoader';
+import { loadMap, MapJSON } from './mapLoader';
+import { loadSprites, SpriteJSON } from './spriteLoader';
 import { GameState, GhostState, TickInput } from './types';
 
 function cloneTiles(tiles: GameState['map']['tiles']): GameState['map']['tiles'] {

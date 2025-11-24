@@ -27,7 +27,7 @@ const toDirection = (vector: Vector2, deadZone = 0.2): Direction => {
 export const useTilt = (enabled = true): TiltState => {
   const calibration = useSelector((state: RootState) => state.tilt.calibration);
   const [tiltState, setTiltState] = useState<TiltState>({ tilt: null, direction: 'none' });
-  const lastUpdateRef = useRef(0);
+  const lastUpdateRef = useRef(-Infinity);
   const smoothedRef = useRef<Vector2>({ x: 0, y: 0 });
 
   useEffect(() => {

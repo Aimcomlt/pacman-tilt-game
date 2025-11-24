@@ -7,6 +7,7 @@ module.exports = {
   moduleNameMapper: {
     '^@pacman/shared$': '<rootDir>/../shared/src',
     '^@pacman/engine$': '<rootDir>/../engine/src',
+    '^(react|react-dom)$': '<rootDir>/../../node_modules/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
