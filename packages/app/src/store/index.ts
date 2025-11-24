@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import gameReducer, { initializeEngine, pushTiltToEngine, selectRenderBatch } from './slices/gameSlice';
 import settingsReducer from './slices/settingsSlice';
-import tiltReducer from './slices/tiltSlice';
+import tiltReducer, { changeDirection, setTilt } from './slices/tiltSlice';
 import renderReducer from './slices/renderSlice';
 
 export const store = configureStore({
@@ -16,4 +16,4 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export { initializeEngine, pushTiltToEngine, selectRenderBatch };
+export { initializeEngine, pushTiltToEngine, selectRenderBatch, changeDirection, setTilt };

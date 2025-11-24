@@ -1,5 +1,7 @@
 export type Vector2 = { x: number; y: number };
 
+export type Direction = 'up' | 'down' | 'left' | 'right' | 'none';
+
 export type TiltInput = {
   raw: Vector2;
   normalized: Vector2;
