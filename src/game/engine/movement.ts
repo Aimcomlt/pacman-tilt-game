@@ -45,8 +45,13 @@ export function movePlayer(state: PlayerState, map: MapDefinition, desired: Dire
   };
 }
 
-export function moveGhost(ghost: GhostState, playerTarget: Position, map: MapDefinition): GhostState {
-  const direction = chooseDirection(ghost, playerTarget, map);
+export function moveGhost(
+  ghost: GhostState,
+  player: PlayerState,
+  map: MapDefinition,
+  ghosts: GhostState[]
+): GhostState {
+  const direction = chooseDirection(ghost, player, map, ghosts);
   const canContinue = direction !== 'none' && canMove(ghost.position, direction, map);
   const nextPosition = canContinue ? advance(ghost.position, direction, ghost.speed) : ghost.position;
   return {

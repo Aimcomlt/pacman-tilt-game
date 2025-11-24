@@ -12,11 +12,16 @@ export interface MapDefinition {
   height: number;
   tileSize: number;
   tiles: TileType[][];
+  graph: MapGraph;
   pellets: number;
   startPositions: {
     player: Position;
     ghosts: Position[];
   };
+}
+
+export interface MapGraph {
+  adjacency: Record<string, Position[]>;
 }
 
 export interface SpriteDefinition {
