@@ -4,6 +4,7 @@ import { CollisionSystem } from './systems/CollisionSystem';
 import { GhostAISystem } from './systems/GhostAISystem';
 import { MapLoader } from './loaders/MapLoader';
 import { SpriteLoader } from './loaders/SpriteLoader';
+import { RulesLoader } from './loaders/RulesLoader';
 
 export type GameState = {
   player: PlayerState;
@@ -59,3 +60,4 @@ export const tickGame = ({
 
 export const loadMap = (raw: unknown): MapSchema => MapLoader.parse(raw);
 export const loadSprites = (raw: unknown): SpriteAtlas => SpriteLoader.parse(raw);
+export const loadRules = (raw: unknown): Ruleset => RulesLoader.parse(raw);

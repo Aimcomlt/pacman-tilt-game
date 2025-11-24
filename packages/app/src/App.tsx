@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { MapSchema } from '@pacman/shared';
 import {
   store,
   selectRenderBatch,
@@ -14,7 +13,7 @@ import {
 import { CanvasRenderer } from './components/CanvasRenderer';
 import { HUD } from './components/HUD';
 import { useTilt } from './hooks/useTilt';
-import mapJson from '../assets/maps/default.json';
+import { levelLoader } from './store/levelLoader';
 
 const AppRoot = () => {
   const dispatch = useDispatch();
@@ -22,7 +21,7 @@ const AppRoot = () => {
   const { tilt, direction } = useTilt();
 
   useEffect(() => {
-    dispatch(loadLevel(mapJson as MapSchema));
+    dispatch(loadLevel(levelLoader.loadDefault()));
     dispatch(startGame());
   }, [dispatch]);
 
