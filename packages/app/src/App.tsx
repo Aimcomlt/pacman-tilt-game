@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { store, selectRenderBatch, pushTiltToEngine, initializeEngine } from './store';
+import { store, selectRenderBatch, pushTiltToEngine, initializeEngine, changeDirection, setTilt } from './store';
 import { CanvasRenderer } from './components/CanvasRenderer';
 import { HUD } from './components/HUD';
 import { useTilt } from './hooks/useTilt';
@@ -8,15 +8,22 @@ import { useTilt } from './hooks/useTilt';
 const AppRoot = () => {
   const dispatch = useDispatch();
   const renderBatch = useSelector(selectRenderBatch);
-  const tilt = useTilt();
+  const { tilt, direction } = useTilt();
 
   useEffect(() => {
     dispatch(initializeEngine());
   }, [dispatch]);
 
   useEffect(() => {
-    if (tilt) dispatch(pushTiltToEngine(tilt));
+    if (tilt) {
+      dispatch(setTilt(tilt));
+      dispatch(pushTiltToEngine(tilt));
+    }
   }, [dispatch, tilt]);
+
+  useEffect(() => {
+    dispatch(changeDirection(direction));
+  }, [dispatch, direction]);
 
   return (
     <>
