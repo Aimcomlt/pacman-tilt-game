@@ -1,4 +1,5 @@
 import { MapDefinition, Position, TileType } from '../engine/types';
+import { buildGraph } from '../engine/pathfinding';
 
 export interface MapJSON {
   layout?: string[];
@@ -73,11 +74,14 @@ export function loadMap(mapData: MapJSON = {}): MapDefinition {
 
   const pellets = tiles.flat().filter((tile) => tile === 'pellet' || tile === 'power-pellet').length;
 
+  const graph = buildGraph(tiles);
+
   return {
     width,
     height,
     tileSize: mapData.tileSize ?? 24,
     tiles,
+    graph,
     pellets,
     startPositions: {
       player: safePlayerStart,

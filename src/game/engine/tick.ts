@@ -69,8 +69,9 @@ export function createInitialState(mapData: MapJSON, spriteData: SpriteJSON): Ga
     speed: sprites.playerSpeed,
   };
 
+  const personalities = ['blinky', 'pinky', 'inky', 'clyde'];
   const ghosts: GhostState[] = map.startPositions.ghosts.map((position, index) => ({
-    id: `ghost-${index}`,
+    id: personalities[index % personalities.length],
     position: { ...position },
     direction: 'left',
     mode: 'chase',
@@ -97,7 +98,7 @@ export function tick(state: GameState, input: TickInput = {}): GameState {
 
   const frightenedGhosts = tickGhostTimers(state.ghosts);
   const ghosts = frightenedGhosts.map((ghost) =>
-    moveGhost(ghost, nextPlayer.position, state.map)
+    moveGhost(ghost, nextPlayer, state.map, frightenedGhosts)
   );
 
   let nextState: GameState = {
