@@ -6,7 +6,12 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
     "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "ci": "npm run lint && npm run test && npm run typecheck && npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
   }
 }

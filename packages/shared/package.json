@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "tsc -p . --emitDeclarationOnly false",
+    "typecheck": "tsc -p . --noEmit",
     "lint": "eslint src",
     "test": "vitest"
   }
