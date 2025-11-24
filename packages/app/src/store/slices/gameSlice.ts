@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Direction, GhostState, MapSchema, PlayerState, RenderBatch, Tile, Vector2 } from '@pacman/shared';
-import mapJson from '../../../../assets/maps/default.json';
+import { Direction, GhostState, MapSchema, PlayerState, RenderBatch, Ruleset, SpriteAtlas, Tile, Vector2 } from '@pacman/shared';
 import { RootState } from '..';
+import { levelLoader, LevelContent } from '../levelLoader';
 
 type Pellet = { position: Vector2; type: 'pellet' | 'power' };
 
@@ -16,6 +16,8 @@ export type GameState = {
   status: 'idle' | 'running' | 'paused' | 'gameOver';
   levelId: string;
   map: MapSchema;
+  rules: Ruleset;
+  sprites: SpriteAtlas;
   pacman: PlayerState & { direction: Direction };
   ghosts: GameGhostState[];
   pellets: Pellet[];
@@ -24,12 +26,7 @@ export type GameState = {
   tick: TickState;
 };
 
-const pelletScore = 10;
-const powerPelletScore = 50;
-const ghostScore = 200;
-const powerDurationMs = 6000;
-
-const asMapSchema = mapJson as MapSchema;
+const defaultLevel = levelLoader.loadDefault();
 
 const directionVectors: Record<Direction, Vector2> = {
   up: { x: 0, y: -1 },
@@ -62,19 +59,21 @@ const createGhosts = (map: MapSchema): GameGhostState[] =>
     aiEnabled: true,
   }));
 
-const createInitialState = (map: MapSchema = asMapSchema): GameState => ({
+const createInitialState = (level: LevelContent = defaultLevel): GameState => ({
   status: 'idle',
-  levelId: map.id,
-  map,
+  levelId: level.map.id,
+  map: level.map,
+  rules: level.rules,
+  sprites: level.sprites,
   pacman: {
-    position: { ...map.playerSpawn },
+    position: { ...level.map.playerSpawn },
     velocity: { x: 0, y: 0 },
     direction: 'none',
     lives: 3,
     score: 0,
   },
-  ghosts: createGhosts(map),
-  pellets: extractPellets(map),
+  ghosts: createGhosts(level.map),
+  pellets: extractPellets(level.map),
   powerTimerMs: 0,
   score: 0,
   tick: { count: 0, lastDeltaMs: 0 },
@@ -104,9 +103,9 @@ const gameSlice = createSlice({
       state.status = 'paused';
     },
     resetGame: (state) => {
-      Object.assign(state, createInitialState(state.map));
+      Object.assign(state, createInitialState({ map: state.map, rules: state.rules, sprites: state.sprites }));
     },
-    loadLevel: (state, action: PayloadAction<MapSchema>) => {
+    loadLevel: (state, action: PayloadAction<LevelContent>) => {
       Object.assign(state, createInitialState(action.payload));
       state.status = 'running';
     },
@@ -153,11 +152,11 @@ const gameSlice = createSlice({
       if (pelletIndex >= 0) {
         const pellet = state.pellets[pelletIndex];
         state.pellets.splice(pelletIndex, 1);
-        state.score += pellet.type === 'power' ? powerPelletScore : pelletScore;
+        state.score += pellet.type === 'power' ? state.rules.powerPelletScore : state.rules.pelletScore;
         state.pacman.score = state.score;
         if (pellet.type === 'power') {
-          state.powerTimerMs = powerDurationMs;
-          state.pacman.poweredUpUntil = Date.now() + powerDurationMs;
+          state.powerTimerMs = state.rules.powerModeDurationMs;
+          state.pacman.poweredUpUntil = Date.now() + state.rules.powerModeDurationMs;
           state.ghosts.forEach((ghost) => {
             if (ghost.mode !== 'eyes') ghost.mode = 'frightened';
           });
@@ -171,7 +170,7 @@ const gameSlice = createSlice({
         if (state.powerTimerMs > 0 && ghost.mode !== 'eyes') {
           ghost.mode = 'eyes';
           ghost.position = { ...state.map.ghostSpawns[0] };
-          state.score += ghostScore;
+          state.score += state.rules.ghostScore;
           state.pacman.score = state.score;
         } else if (ghost.mode !== 'eyes') {
           state.pacman.lives -= 1;
