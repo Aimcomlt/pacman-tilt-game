@@ -9,21 +9,52 @@ import { RulesLoader } from './loaders/RulesLoader';
 export type GameState = {
   player: PlayerState;
   ghosts: GhostState[];
+  pellets: Record<string, 2 | 3>;
   pelletsRemaining: number;
+  mapId?: string;
   inputs: { tilt?: TiltInput; button?: ButtonInput };
 };
 
-export const createGameState = (): GameState => ({
-  player: {
-    position: { x: 0, y: 0 },
-    velocity: { x: 0, y: 0 },
-    lives: 3,
-    score: 0,
-  },
-  ghosts: [],
-  pelletsRemaining: 0,
-  inputs: {},
-});
+const pelletKey = (x: number, y: number) => `${x},${y}`;
+
+const extractPellets = (map: MapSchema): Record<string, 2 | 3> => {
+  const pellets: Record<string, 2 | 3> = {};
+  map.tiles.forEach((row, y) => {
+    row.forEach((tile, x) => {
+      if (tile === 2 || tile === 3) {
+        pellets[pelletKey(x, y)] = tile;
+      }
+    });
+  });
+  return pellets;
+};
+
+export const createGameState = (map?: MapSchema): GameState => {
+  const pellets = map ? extractPellets(map) : {};
+  return {
+    player: {
+      position: map ? { ...map.playerSpawn } : { x: 0, y: 0 },
+      velocity: { x: 0, y: 0 },
+      lives: 3,
+      score: 0,
+    },
+    ghosts: map
+      ? map.ghostSpawns.map((spawn, index) => ({
+          id: `ghost-${index + 1}`,
+          position: { ...spawn },
+          velocity: { x: 0, y: 0 },
+          lives: 0,
+          score: 0,
+          poweredUpUntil: undefined,
+          mode: 'scatter',
+        }))
+      : [],
+    pellets,
+    pelletsRemaining: Object.keys(pellets).length,
+    mapId: map?.id,
+    inputs: {},
+  };
+};
 
 export const tickGame = ({
   state,
@@ -38,6 +69,16 @@ export const tickGame = ({
   delta: number;
   sprites?: SpriteAtlas;
 }): { snapshot: EngineSnapshot; renderBatch: RenderBatch } => {
+  if (state.mapId !== map.id) {
+    const next = createGameState(map);
+    state.player = next.player;
+    state.ghosts = next.ghosts;
+    state.pellets = next.pellets;
+    state.pelletsRemaining = next.pelletsRemaining;
+    state.mapId = map.id;
+    state.inputs = next.inputs;
+  }
+
   MovementSystem.integrate(state, map, rules, delta);
   CollisionSystem.resolve(state, map, rules);
   GhostAISystem.update(state, map, rules, delta);

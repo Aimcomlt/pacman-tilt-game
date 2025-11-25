@@ -27,6 +27,7 @@ export class EngineHost {
     this.map = payload.map;
     this.rules = payload.rules;
     this.sprites = payload.sprites;
+    this.state = createGameState(payload.map);
   }
 
   start() {
