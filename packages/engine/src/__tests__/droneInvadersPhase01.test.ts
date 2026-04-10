@@ -109,6 +109,8 @@ describe('Drone-Invaders Phase 0.1 deterministic checks', () => {
 
     expect(output.policy.allowInvasionEvent).toBe(false);
     expect(output.execution.invasionWaveSize).toBe(0);
+    expect(output.policy.reasonCodes).toContain('resources_below_min');
+    expect(output.policy.reasonCodes).not.toContain('risk_below_min');
     expect(output.execution.advisorySignals).toContain('POLICY HOLD: invasion escalation currently blocked.');
   });
 
@@ -154,6 +156,7 @@ describe('Drone-Invaders Phase 0.1 deterministic checks', () => {
 
     expect(output.policy.hasSafePath).toBe(false);
     expect(output.policy.allowInvasionEvent).toBe(false);
+    expect(output.policy.reasonCodes).toContain('no_safe_path');
     expect(output.policy.reasons).toContain('no safe path available');
     expect(output.execution.advisorySignals).toContain('POLICY HOLD: no safe extraction path available.');
   });
@@ -174,5 +177,55 @@ describe('Drone-Invaders Phase 0.1 deterministic checks', () => {
     const policy = evaluatePolicy(traversableWorld, interpretation);
 
     expect(policy.hasSafePath).toBe(true);
+  });
+
+  test('policy sets risk_below_min reason when clamped risk is under minimum invasion threshold', () => {
+    const lowRiskWorld = createWorld({
+      run: {
+        timestampMs: 1000,
+        resourcesBanked: 100,
+        currentSectorId: 'sector-a',
+        threatLevel: 0.01,
+        activeObjectives: ['extract-resource-1'],
+      },
+      conway: {
+        step: 5,
+        aliveCells: [{ x: 1, y: 1 }],
+      },
+    });
+
+    const interpretation = interpretWorld(lowRiskWorld);
+    const policy = evaluatePolicy(lowRiskWorld, interpretation);
+
+    expect(policy.allowInvasionEvent).toBe(false);
+    expect(policy.reasonCodes).toContain('risk_below_min');
+    expect(policy.reasonCodes).not.toContain('resources_below_min');
+  });
+
+  test('policy log captures candidate inputs, thresholds, decisions, and reason code details', () => {
+    const lowResourceWorld = createWorld({
+      run: {
+        timestampMs: 1000,
+        resourcesBanked: 5,
+        currentSectorId: 'sector-a',
+        threatLevel: 0.5,
+        activeObjectives: ['extract-resource-1'],
+      },
+    });
+
+    const interpretation = interpretWorld(lowResourceWorld);
+    const policy = evaluatePolicy(lowResourceWorld, interpretation);
+
+    expect(policy.policyLog.candidateInput.resourcesBanked).toBe(5);
+    expect(policy.policyLog.thresholds.minResourcesForInvasion).toBe(20);
+    expect(policy.policyLog.decision.allowInvasionEvent).toBe(false);
+    expect(policy.policyLog.reasons).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'resources_below_min',
+          message: 'invasion gated: resources below minimum threshold',
+        }),
+      ]),
+    );
   });
 });
