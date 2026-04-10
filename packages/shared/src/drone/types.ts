@@ -76,6 +76,39 @@ export type DronePolicyDecision = {
   hasSafePath: boolean;
   clampedRisk: number;
   reasons: string[];
+  reasonCodes: DronePolicyReasonCode[];
+  policyLog: DronePolicyLog;
+};
+
+export type DronePolicyReasonCode =
+  | 'hazard_coverage_exceeded'
+  | 'no_safe_path'
+  | 'risk_below_min'
+  | 'resources_below_min';
+
+export type DronePolicyLogReason = {
+  code: DronePolicyReasonCode;
+  message: string;
+};
+
+export type DronePolicyLog = {
+  candidateInput: {
+    hazardCoverage: number;
+    clampedRisk: number;
+    resourcesBanked: number;
+    hasSafePath: boolean;
+  };
+  thresholds: {
+    maxHazardCoverage: number;
+    maxRiskBeforeInvasionClamp: number;
+    minRiskForInvasion: number;
+    minResourcesForInvasion: number;
+  };
+  decision: {
+    allowHazardSpawn: boolean;
+    allowInvasionEvent: boolean;
+  };
+  reasons: DronePolicyLogReason[];
 };
 
 export type DroneExecutionPlan = {
