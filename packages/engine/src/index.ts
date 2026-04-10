@@ -105,3 +105,5 @@ export const loadRules = (raw: unknown): Ruleset => RulesLoader.parse(raw);
 
 export * from './legacy';
 export * from './drone-invaders';
+
+export * from './runtime/tileRuntime';
