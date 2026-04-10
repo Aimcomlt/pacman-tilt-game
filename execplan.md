@@ -638,6 +638,20 @@ Exit criteria:
 Goal:
 Tie tactical success into explicit sector unlock choices, resource spend priorities, and recoverable progression pacing.
 
+Status note (April 10, 2026):
+- completed in code with per-tick unlock option surfacing, spend-priority recommendation, and recovery buffer targeting.
+
+Deliverables:
+- explicit sector unlock options with costs and affordability state
+- spend-priority guidance (stabilize/bank/unlock) driven by tactical readiness
+- recovery buffer target for safer progression pacing
+- concise progression summary cues for assistant UX surfaces
+
+Exit criteria:
+- every tick includes bounded progression guidance output
+- unlock recommendations reflect both readiness and safe-path state
+- high-pressure states steer spend priority toward stabilization over expansion
+
 ### Phase 9 — Content Variety and Event Deck Expansion
 Goal:
 Increase replay variety through curated hazard/event combinations that remain readable and policy-safe.

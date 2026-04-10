@@ -1,6 +1,7 @@
 import {
   DroneAssistantTuningConfig,
   DroneExecutionPlan,
+  DronePhase8Progression,
   DronePhase7Briefing,
   DroneInterpretation,
   DronePolicyDecision,
@@ -53,6 +54,7 @@ export type ExecutionPhaseResult = {
   telemetry: DroneTelemetrySnapshot;
   playtestReview: DronePlaytestReview;
   phase7Briefing: DronePhase7Briefing;
+  phase8Progression: DronePhase8Progression;
 };
 
 const clampUnit = (value: number): number => Math.max(0, Math.min(1, value));
@@ -100,6 +102,68 @@ const createPhase7Briefing = (
     readinessScore,
     recommendedFocus,
     riskTrend,
+    summary,
+  };
+};
+
+const createPhase8Progression = (
+  world: DroneWorldSignal,
+  policy: DronePolicyDecision,
+  phase7Briefing: DronePhase7Briefing,
+): DronePhase8Progression => {
+  const unlockCosts = {
+    'adjacent-sector': 60,
+    'defense-grid': 35,
+    'extraction-boost': 45,
+  } as const;
+
+  const spendPriority = !policy.hasSafePath || phase7Briefing.recommendedFocus === 'fight'
+    ? 'stabilize'
+    : phase7Briefing.readinessScore >= 0.65
+      ? 'unlock'
+      : 'bank';
+
+  const unlockOptions: DronePhase8Progression['unlockOptions'] = [
+    {
+      id: 'adjacent-sector',
+      label: 'Expand to adjacent sector',
+      cost: unlockCosts['adjacent-sector'],
+      unlocked: world.run.resourcesBanked >= unlockCosts['adjacent-sector'],
+      recommended: spendPriority === 'unlock' && phase7Briefing.recommendedFocus === 'expand',
+    },
+    {
+      id: 'defense-grid',
+      label: 'Install defense grid',
+      cost: unlockCosts['defense-grid'],
+      unlocked: world.run.resourcesBanked >= unlockCosts['defense-grid'],
+      recommended: spendPriority === 'stabilize',
+    },
+    {
+      id: 'extraction-boost',
+      label: 'Upgrade extraction throughput',
+      cost: unlockCosts['extraction-boost'],
+      unlocked: world.run.resourcesBanked >= unlockCosts['extraction-boost'],
+      recommended: spendPriority === 'bank' || phase7Briefing.recommendedFocus === 'extract',
+    },
+  ];
+
+  const recoveryBufferTarget = spendPriority === 'stabilize' ? 35 : spendPriority === 'bank' ? 50 : 20;
+
+  const summary: string[] = [];
+  const unlockableCount = unlockOptions.filter((option) => option.unlocked).length;
+  summary.push(`UNLOCK STATUS: ${unlockableCount}/${unlockOptions.length} options currently affordable.`);
+  if (spendPriority === 'stabilize') {
+    summary.push('SPEND PRIORITY: reinforce survival systems before committing to sector expansion.');
+  } else if (spendPriority === 'bank') {
+    summary.push('SPEND PRIORITY: bank resources to preserve a recovery buffer before major unlock spend.');
+  } else {
+    summary.push('SPEND PRIORITY: conditions are favorable for progression unlock investment.');
+  }
+
+  return {
+    unlockOptions,
+    spendPriority,
+    recoveryBufferTarget,
     summary,
   };
 };
@@ -153,12 +217,14 @@ export const createExecutionArtifacts = (
     },
   );
   const phase7Briefing = createPhase7Briefing(world, interpretation, policy, telemetry, playtestReview);
+  const phase8Progression = createPhase8Progression(world, policy, phase7Briefing);
 
   return {
     execution,
     telemetry,
     playtestReview,
     phase7Briefing,
+    phase8Progression,
   };
 };
 
