@@ -166,10 +166,43 @@ export type DronePolicyLog = {
   reasons: DronePolicyLogReason[];
 };
 
+export type DroneAssistantAlertTier = 'info' | 'warning' | 'critical';
+
+export type DroneAssistantWarning = {
+  id: string;
+  tier: DroneAssistantAlertTier;
+  message: string;
+};
+
+export type DroneAssistantRouteHint = {
+  id: string;
+  label: string;
+  waypoints: DroneVector2[];
+  confidence: number;
+};
+
+export type DroneAssistantOverlayCell = DroneVector2 & {
+  intensity: number;
+};
+
+export type DroneAssistantDebugToggles = {
+  showDangerOverlay: boolean;
+  showRouteHints: boolean;
+  showPolicyReasons: boolean;
+};
+
+export type DroneAssistantUiScaffold = {
+  warnings: DroneAssistantWarning[];
+  routeHints: DroneAssistantRouteHint[];
+  dangerOverlay: DroneAssistantOverlayCell[];
+  debug: DroneAssistantDebugToggles;
+};
+
 export type DroneExecutionPlan = {
   hazardPlacements: DroneVector2[];
   invasionWaveSize: number;
   advisorySignals: string[];
+  assistantUi: DroneAssistantUiScaffold;
 };
 
 export type DroneTickInput = {

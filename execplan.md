@@ -540,6 +540,9 @@ Exit criteria:
 Goal:
 Prove assistant usefulness before model integration.
 
+Status note (April 10, 2026):
+- completed in code with assistant UI scaffolding, rule-based warning tiers, route hint planning, danger overlay output, and debug toggle flags wired through execution planning.
+
 Deliverables:
 - assistant UI scaffolding
 - rule-based warnings
