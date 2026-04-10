@@ -1,5 +1,6 @@
 import { DroneExecutionPlan, DroneInterpretation, DronePolicyDecision, DroneWorldSignal } from '@pacman/shared';
 import { generateAdvisorySignals } from '../assistant/advisory';
+import { createAssistantUiScaffold } from '../assistant/ui';
 
 const MAX_HAZARD_SPAWNS_PER_TICK = 5;
 
@@ -19,5 +20,6 @@ export const createExecutionPlan = (
     hazardPlacements,
     invasionWaveSize,
     advisorySignals: generateAdvisorySignals(world, interpretation, policy),
+    assistantUi: createAssistantUiScaffold(world, interpretation, policy),
   };
 };

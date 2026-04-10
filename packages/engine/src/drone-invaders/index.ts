@@ -34,6 +34,7 @@ export const tickDroneInvaders = (
 };
 
 export * from './assistant/advisory';
+export * from './assistant/ui';
 export * from './conway/step';
 export * from './execution/plan';
 export * from './features/extractors';
