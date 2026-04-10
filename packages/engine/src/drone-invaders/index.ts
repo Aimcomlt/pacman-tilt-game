@@ -38,6 +38,7 @@ export const tickDroneInvaders = (
     telemetry: executionPhase.telemetry,
     playtestReview: executionPhase.playtestReview,
     phase7Briefing: executionPhase.phase7Briefing,
+    phase8Progression: executionPhase.phase8Progression,
   };
 };
 

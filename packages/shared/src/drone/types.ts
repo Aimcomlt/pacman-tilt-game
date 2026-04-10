@@ -258,6 +258,25 @@ export type DronePhase7Briefing = {
   summary: string[];
 };
 
+export type DroneSectorUnlockId = 'adjacent-sector' | 'defense-grid' | 'extraction-boost';
+
+export type DroneSectorUnlockOption = {
+  id: DroneSectorUnlockId;
+  label: string;
+  cost: number;
+  unlocked: boolean;
+  recommended: boolean;
+};
+
+export type DroneSpendPriority = 'stabilize' | 'bank' | 'unlock';
+
+export type DronePhase8Progression = {
+  unlockOptions: DroneSectorUnlockOption[];
+  spendPriority: DroneSpendPriority;
+  recoveryBufferTarget: number;
+  summary: string[];
+};
+
 export type DroneTelemetrySnapshot = {
   timestampMs: number;
   clampedRisk: number;
@@ -289,4 +308,5 @@ export type DroneTickOutput = {
   telemetry: DroneTelemetrySnapshot;
   playtestReview: DronePlaytestReview;
   phase7Briefing: DronePhase7Briefing;
+  phase8Progression: DronePhase8Progression;
 };
